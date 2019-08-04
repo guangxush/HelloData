@@ -1,0 +1,14 @@
+# base URL
+server:
+  port: 8080
+  servlet:
+    context-path: /server
+    multipart:
+      max-file-size: 20M
+      max-request-size: 20M
+
+logging:
+  level:
+    com.shgx.hidata.controller: DEBUG
+  file: ./logs/core.log
+  root: INFO

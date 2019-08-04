@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true">
+
+    <!--上下文名称，用于区分不同应用的记录，不设置默认为default，可以通过%contextname来打印查看-->
+    <contextName>hellodata</contextName>
+    <property name="logPath" value="./data" />
+    <!--输出到控制台-->
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %contextName [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!--输出到文件-->
+    <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${logPath}/hello%d{yyyy-MM-dd}.txt</fileNamePattern>
+            <maxHistory>20</maxHistory>        <!--日志最大保存时间（天）-->
+            <totalSizeCap>1GB</totalSizeCap>   <!--单个日志最大容量-->
+        </rollingPolicy>
+        <encoder>
+            <pattern>%msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!--root是必写的节点，用来指定日志输出级别-->
+    <root level="info">
+        <appender-ref ref="console" />
+        <appender-ref ref="file" />
+    </root>
+
+    <root level="error">
+        <appender-ref ref="console" />
+        <appender-ref ref="file" />
+    </root>
+
+    <!-- logger用来指定打印某个包或类的日志，test,dev表示在测试及打包环境都使用 -->
+    <springProfile name="test,dev">
+        <logger name="com.shgx.hidata.controller" level="info">
+            <appender-ref ref="file"/>
+        </logger>
+    </springProfile>
+
+    <!--生产环境下打印info级别的日志-->
+    <!--logback.LogbackDemo：打印controller包下所有类的日志，需要把这个包改成自己项目的 -->
+    <springProfile name="prod">
+        <logger name="com.shgx.hidata.controller" level="info" additivity="false">
+            <appender-ref ref="console"/>
+        </logger>
+    </springProfile>
+
+    <springProfile name="prod">
+        <logger name="com.shgx.hidata.controller" level="info">
+            <appender-ref ref="file"/>
+        </logger>
+    </springProfile>
+</configuration>
